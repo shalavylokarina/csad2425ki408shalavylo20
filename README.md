@@ -1,3 +1,4 @@
+
 # Details about repository:
 This is a repository for performing laboratory work on the subject "Computer systems automated design". The main branch is develop. 
 Branches named "feature/develop/<task1>" are created to perform laboratory work.
@@ -20,7 +21,7 @@ MVC is the most common architecture design. But the student can use another appr
   
   ∙ *Data driven approach*
   
-## Develop area:
+# Develop area:
 
  ∙ Hardware (HW) and Desktop software (SW)
  
@@ -54,3 +55,5 @@ Game should have a menu that allows to configure parameters:
 1) **Student number:** 20
 2) **Game:** rock paper scissors
 3) **Config format:** JSON
+
+csad2425ki408shalavylo20
