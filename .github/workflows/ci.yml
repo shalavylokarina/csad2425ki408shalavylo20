@@ -1,6 +1,14 @@
 name: Build and Test Arduino Project
 
-on: [push, pull_request]
+on: 
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
 
 jobs:
   build:
@@ -17,28 +25,21 @@ jobs:
         with:
           version: latest
 
-      # Крок 3: Встановлення необхідних бібліотек (якщо потрібно)
-      - name: Install Libraries
-        run: |
-          arduino-cli lib install <library_name>
-          # Замініть <library_name> на назву бібліотеки, якщо вони потрібні
-
-      # Крок 4: Компіляція клієнтського скетчу
+      # Крок 3: Компіляція клієнтського скетчу
       - name: Build Client Sketch
         run: |
-          arduino-cli compile --fqbn arduino:avr:uno src/client.ino
-        # Заміни "arduino:avr:uno" на свою плату, якщо це не Arduino Uno
+          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/client src/client.ino
 
-      # Крок 5: Компіляція серверного скетчу
+      # Крок 4: Компіляція серверного скетчу
       - name: Build Server Sketch
         run: |
-          arduino-cli compile --fqbn arduino:avr:uno src/server.ino
+          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/server src/server.ino
 
-      # Крок 6: Завантаження артефактів з бінарними файлами
+      # Крок 5: Завантаження артефактів з бінарними файлами
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: hex-files
           path: |
-            src/client.ino.hex
-            src/server.ino.hex
+            build/src/client/client.ino.hex
+            build/src/server/server.ino.hex
