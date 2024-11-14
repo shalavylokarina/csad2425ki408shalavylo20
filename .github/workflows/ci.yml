@@ -15,27 +15,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Крок 1: Клонування репозиторію
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Крок 2: Встановлення Arduino CLI
       - name: Set up Arduino CLI
-        uses: arduino/setup-arduino-cli@v1
+        uses: arduino/setup-arduino-cli@v1.1.0
         with:
-          version: latest
+          version: 0.31.0
 
-      # Крок 3: Компіляція клієнтського скетчу
       - name: Build Client Sketch
         run: |
           arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/client src/client.ino
 
-      # Крок 4: Компіляція серверного скетчу
       - name: Build Server Sketch
         run: |
           arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/server src/server.ino
 
-      # Крок 5: Завантаження артефактів з бінарними файлами
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -43,3 +38,4 @@ jobs:
           path: |
             build/src/client/client.ino.hex
             build/src/server/server.ino.hex
+
