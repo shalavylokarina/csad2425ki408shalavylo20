@@ -18,25 +18,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Встановлення Arduino CLI з додатковою інформацією у випадку помилки
+      # Завантаження та встановлення Arduino CLI
       - name: Install Arduino CLI
         run: |
           mkdir -p ~/arduino-cli
           curl -fsSL https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz -o arduino-cli.tar.gz
           tar -xzf arduino-cli.tar.gz -C ~/arduino-cli --strip-components=1
-          echo "~/arduino-cli" >> $GITHUB_PATH
-        shell: bash
-
+          echo "$HOME/arduino-cli" >> $GITHUB_PATH
+          sudo mv ~/arduino-cli/arduino-cli /usr/local/bin/
+      
       - name: Verify Arduino CLI Version
-        run: ~/arduino-cli/arduino-cli version
+        run: arduino-cli version
 
       - name: Build Client Sketch
         run: |
-          ~/arduino-cli/arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/client src/client.ino
+          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/client src/client.ino
 
       - name: Build Server Sketch
         run: |
-          ~/arduino-cli/arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/server src/server.ino
+          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/server src/server.ino
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
