@@ -43,7 +43,7 @@ jobs:
         with:
           name: hex-files
           path: |
-            build/src/client/client.ino.hex
-            build/src/server/server.ino.hex
+            build/client/client.ino.hex
+            build/server/server.ino.hex
 
 
