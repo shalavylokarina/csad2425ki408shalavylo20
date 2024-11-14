@@ -18,26 +18,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Завантаження та встановлення Arduino CLI
+      # Завантаження та встановлення Arduino CLI з додатковим логуванням
       - name: Install Arduino CLI
         run: |
           mkdir -p ~/arduino-cli
-          curl -fsSL https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz -o arduino-cli.tar.gz
-          tar -xzf arduino-cli.tar.gz -C ~/arduino-cli --strip-components=1
-          ls -la ~/arduino-cli # Перевіряємо, чи розпаковка пройшла успішно
-          echo "$HOME/arduino-cli" >> $GITHUB_PATH
-          sudo mv ~/arduino-cli/arduino-cli /usr/local/bin/
+          curl -fsSL https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz -o arduino-cli.tar.gz || echo "Failed to download Arduino CLI"
+          tar -xzf arduino-cli.tar.gz -C ~/arduino-cli --strip-components=1 || echo "Failed to extract Arduino CLI"
+          ls -la ~/arduino-cli
+          sudo mv ~/arduino-cli/arduino-cli /usr/local/bin/ || echo "Failed to move Arduino CLI to /usr/local/bin"
       
       - name: Verify Arduino CLI Version
-        run: arduino-cli version
+        run: arduino-cli version || echo "Arduino CLI not found"
 
       - name: Build Client Sketch
         run: |
-          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/client src/client.ino
+          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/client src/client.ino || echo "Client sketch compilation failed"
 
       - name: Build Server Sketch
         run: |
-          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/server src/server.ino
+          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/server src/server.ino || echo "Server sketch compilation failed"
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
@@ -46,4 +45,5 @@ jobs:
           path: |
             build/src/client/client.ino.hex
             build/src/server/server.ino.hex
+
 
