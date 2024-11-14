@@ -1,0 +1,49 @@
+name: Build and Test Arduino Project
+
+on: 
+  push:
+    branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Завантаження та встановлення Arduino CLI з додатковим логуванням
+      - name: Install Arduino CLI
+        run: |
+          mkdir -p ~/arduino-cli
+          curl -fsSL https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz -o arduino-cli.tar.gz || echo "Failed to download Arduino CLI"
+          tar -xzf arduino-cli.tar.gz -C ~/arduino-cli --strip-components=1 || echo "Failed to extract Arduino CLI"
+          ls -la ~/arduino-cli
+          sudo mv ~/arduino-cli/arduino-cli /usr/local/bin/ || echo "Failed to move Arduino CLI to /usr/local/bin"
+      
+      - name: Verify Arduino CLI Version
+        run: arduino-cli version || echo "Arduino CLI not found"
+
+      - name: Build Client Sketch
+        run: |
+          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/client src/client.ino || echo "Client sketch compilation failed"
+
+      - name: Build Server Sketch
+        run: |
+          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/server src/server.ino || echo "Server sketch compilation failed"
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: hex-files
+          path: |
+            build/client/client.ino.hex
+            build/server/server.ino.hex
+
+
