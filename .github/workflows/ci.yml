@@ -1,0 +1,44 @@
+name: Build and Test Arduino Project
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Крок 1: Клонування репозиторію
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Крок 2: Встановлення Arduino CLI
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+        with:
+          version: latest
+
+      # Крок 3: Встановлення необхідних бібліотек (якщо потрібно)
+      - name: Install Libraries
+        run: |
+          arduino-cli lib install <library_name>
+          # Замініть <library_name> на назву бібліотеки, якщо вони потрібні
+
+      # Крок 4: Компіляція клієнтського скетчу
+      - name: Build Client Sketch
+        run: |
+          arduino-cli compile --fqbn arduino:avr:uno src/client.ino
+        # Заміни "arduino:avr:uno" на свою плату, якщо це не Arduino Uno
+
+      # Крок 5: Компіляція серверного скетчу
+      - name: Build Server Sketch
+        run: |
+          arduino-cli compile --fqbn arduino:avr:uno src/server.ino
+
+      # Крок 6: Завантаження артефактів з бінарними файлами
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: hex-files
+          path: |
+            src/client.ino.hex
+            src/server.ino.hex
