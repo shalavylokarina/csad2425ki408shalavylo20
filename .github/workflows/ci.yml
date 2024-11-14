@@ -24,6 +24,7 @@ jobs:
           mkdir -p ~/arduino-cli
           curl -fsSL https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Linux_64bit.tar.gz -o arduino-cli.tar.gz
           tar -xzf arduino-cli.tar.gz -C ~/arduino-cli --strip-components=1
+          ls -la ~/arduino-cli # Перевіряємо, чи розпаковка пройшла успішно
           echo "$HOME/arduino-cli" >> $GITHUB_PATH
           sudo mv ~/arduino-cli/arduino-cli /usr/local/bin/
       
