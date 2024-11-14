@@ -16,24 +16,25 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      # Вручну завантажуємо та налаштовуємо Arduino CLI
-      - name: Download Arduino CLI
+      # Встановлення Arduino CLI вручну
+      - name: Install Arduino CLI
         run: |
-          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
-          echo "$HOME/bin" >> $GITHUB_PATH
+          mkdir -p ~/arduino-cli
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh -s -b ~/arduino-cli
+          echo "~/arduino-cli" >> $GITHUB_PATH
 
-      - name: Arduino CLI Version
-        run: arduino-cli version
+      - name: Verify Arduino CLI Version
+        run: ~/arduino-cli/arduino-cli version
 
       - name: Build Client Sketch
         run: |
-          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/client src/client.ino
+          ~/arduino-cli/arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/client src/client.ino
 
       - name: Build Server Sketch
         run: |
-          arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/server src/server.ino
+          ~/arduino-cli/arduino-cli compile --fqbn arduino:avr:uno --output-dir build/src/server src/server.ino
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v3
